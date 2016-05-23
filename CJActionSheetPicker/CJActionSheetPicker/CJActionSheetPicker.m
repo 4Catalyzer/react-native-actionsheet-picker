@@ -14,14 +14,14 @@
 
 #import "ActionSheetStringPicker.h"
 
+@implementation CJActionSheetPicker
+
 RCT_EXPORT_MODULE()
 
 - (dispatch_queue_t)methodQueue
 {
     return dispatch_get_main_queue();
 }
-
-@implementation CJActionSheetPicker
 
 RCT_EXPORT_METHOD(showPicker:(NSDictionary *)options
                   resolver:(RCTPromiseResolveBlock)resolve
@@ -46,24 +46,24 @@ RCT_EXPORT_METHOD(showPicker:(NSDictionary *)options
     
     NSArray *rows = [RCTConvert NSArray:options[@"rows"]];
     
-    void(^doneBlock)(ActionSheetDatePicker *, id, id) = ^(ActionSheetDatePicker *picker, NSInteger selectedIndex, id selectedValue) {
-        resolver(@{
-            @"cancelled": @NO,
-            @"selectedIndex": @(selectedIndex),
-            @"selectedValue": @(selectedValue)
-        });
+    void(^doneBlock)(ActionSheetStringPicker *, NSInteger, id) = ^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
+        resolve(@{
+                  @"cancelled": @NO,
+                  @"selectedIndex": @(selectedIndex),
+                  @"selectedValue": (NSString *)selectedValue,
+                  });
     };
     
-    void(^cancelBlock)(ActionSheetDatePicker *) = ^(ActionSheetDatePicker *picker) {
-        resolver(@{ @"cancelled": @YES });
+    void(^cancelBlock)(ActionSheetStringPicker *) = ^(ActionSheetStringPicker *picker) {
+        resolve(@{ @"cancelled": @YES });
     };
     
     ActionSheetStringPicker *picker = [[ActionSheetStringPicker alloc] initWithTitle:title
-                                                                            rows:rows
-                                                                initialSelection:selectedIndex
-                                                                       doneBlock:doneBlock
-                                                                     cancelBlock:cancelBlock
-                                                                          origin:sourceView];
+                                                                                rows:rows
+                                                                    initialSelection:selectedIndex
+                                                                           doneBlock:doneBlock
+                                                                         cancelBlock:cancelBlock
+                                                                              origin:sourceView];
     
     
     [picker showActionSheetPicker];
