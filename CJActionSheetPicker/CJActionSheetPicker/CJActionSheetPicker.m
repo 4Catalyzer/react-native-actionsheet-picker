@@ -69,7 +69,7 @@ RCT_EXPORT_METHOD(showPicker:(NSDictionary *)options
     [picker showActionSheetPicker];
 }
 
-RCT_EXPORT_METHOD(showCountDownPickerWithOptions:(NSDictionary *)options
+RCT_EXPORT_METHOD(showCountDownPicker:(NSDictionary *)options
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(__unused RCTPromiseRejectBlock)reject)
 {

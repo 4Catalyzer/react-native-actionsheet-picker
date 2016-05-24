@@ -67,7 +67,7 @@ var CountDownPicker = require('NativeModules').CJCountDownPicker;
 
 var ExampleApp = React.createClass({
   showPicker: function() {
-    CountDownPicker.showCountDownPickerWithOptions({
+    CountDownPicker.showCountDownPicker({
       title: 'show', //optional
       countDownDuration: '' //optional intial time
     }).then(({ cancelled, selectedDate }) => {

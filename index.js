@@ -10,8 +10,8 @@ async function showPicker(options) {
   return await CJActionSheetPicker.showPicker(options);
 }
 
-async function showCountDownPickerWithOptions(options) {
-  return await CJActionSheetPicker.showCountDownPickerWithOptions(options);
+async function showCountDownPicker(options) {
+  return await CJActionSheetPicker.showCountDownPicker(options);
 }
 
-export { showPicker, showCountDownPickerWithOptions };
+export { showPicker, showCountDownPicker };
