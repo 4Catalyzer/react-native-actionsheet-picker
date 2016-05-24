@@ -70,7 +70,7 @@ var ExampleApp = React.createClass({
     CountDownPicker.showCountDownPickerWithOptions({
       title: 'show', //optional
       countDownDuration: '' //optional intial time
-    }, (cancelled, duration) => {
+    }).then(({ cancelled, selectedDate }) => {
         if(cancelled) {
           AlertIOS.alert('Error', 'select a time');
         }

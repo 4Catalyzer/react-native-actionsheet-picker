@@ -14,4 +14,4 @@ async function showCountDownPickerWithOptions(options) {
   return await CJActionSheetPicker.showCountDownPickerWithOptions(options);
 }
 
-export default showPicker;
+export { showPicker, showCountDownPickerWithOptions };
