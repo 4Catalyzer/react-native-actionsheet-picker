@@ -1,6 +1,6 @@
 {
   "name": "react-native-actionsheet-picker",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A wrapper on top of ActionSheetPicker-3.0 for displaying string picker in an actionsheet",
   "author": {
     "name": "Chirag Jain",

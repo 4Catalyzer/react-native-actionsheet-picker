@@ -1,7 +1,7 @@
 import ReactNative from 'react-native';
 
 const {
-  NativeModules {
+  NativeModules: {
     CJActionSheetPicker,
   }
 } = ReactNative;
