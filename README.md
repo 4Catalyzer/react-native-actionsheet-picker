@@ -8,7 +8,7 @@ A wrapper on top of [ActionSheetPicker-3.0](https://github.com/skywinder/ActionS
 npm i --save react-native-actionsheet-picker
 ```
 
-You need CocoaPods to install `ActionSheetPicker-3.0`. 
+You need CocoaPods to install `ActionSheetPicker-3.0`.
 To integrate ActionSheetPicker-3.0 into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
@@ -32,7 +32,7 @@ $ pod install
 4. Whenever you want to use it within React code now you can: `var CountDownPicker = require('NativeModules').CJActionSheetPicker;`
 
 
-## Example
+## Example `ActionSheetPicker`
 ```javascript
 var ActionSheetPicker = require('NativeModules').CJActionSheetPicker;
 
@@ -44,6 +44,37 @@ var ExampleApp = React.createClass({
       rows: ['apple', 'orange']
     }).then(({ cancelled, selectedIndex, selectedValue }) => {
       // console.log(selectedIndex)
+    });
+  },  
+  render: function() {
+    return (
+      <TouchableHighlight
+            onPress={this.showPicker}
+            underlayColor="#f7f7f7">
+	      <View style={styles.container}>
+	        <Image source={require('image!announcement')} style={styles.image} />
+	      </View>
+	   </TouchableHighlight>
+    );
+  }
+});
+```
+
+
+## Example `CountDownPicker`
+```javascript
+var CountDownPicker = require('NativeModules').CJCountDownPicker;
+
+var ExampleApp = React.createClass({
+  showPicker: function() {
+    CountDownPicker.showCountDownPicker({
+      title: 'show', //optional
+      countDownDuration: '' //optional intial time
+    }).then(({ cancelled, selectedDate }) => {
+        if(cancelled) {
+          AlertIOS.alert('Error', 'select a time');
+        }
+        //duration is in seconds.
     });
   },  
   render: function() {
