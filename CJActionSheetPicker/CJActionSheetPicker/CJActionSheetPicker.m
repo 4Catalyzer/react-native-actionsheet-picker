@@ -1,11 +1,3 @@
-//
-//  CJActionSheetPicker.m
-//  CJActionSheetPicker
-//
-//  Created by Chirag Jain on 5/23/16.
-//  Copyright © 2016 Chirag Jain. All rights reserved.
-//
-
 #import "CJActionSheetPicker.h"
 
 #import "RCTConvert.h"
@@ -13,6 +5,7 @@
 #import "RCTUtils.h"
 
 #import "ActionSheetStringPicker.h"
+#import "ActionSheetDatePicker.h"
 
 @implementation CJActionSheetPicker
 
@@ -23,7 +16,7 @@ RCT_EXPORT_MODULE()
     return dispatch_get_main_queue();
 }
 
-RCT_EXPORT_METHOD(showPicker:(NSDictionary *)options
+RCT_EXPORT_METHOD(showStringPicker:(NSDictionary *)options
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(__unused RCTPromiseRejectBlock)reject)
 {
@@ -32,6 +25,7 @@ RCT_EXPORT_METHOD(showPicker:(NSDictionary *)options
         RCTLogError(@"Tried to display action sheet but there is no application window. options: %@", options);
         return;
     }
+
     UIView *sourceView = controller.view;
 
     NSString *title = @"";
@@ -47,11 +41,7 @@ RCT_EXPORT_METHOD(showPicker:(NSDictionary *)options
     NSArray *rows = [RCTConvert NSArray:options[@"rows"]];
 
     void(^doneBlock)(ActionSheetStringPicker *, NSInteger, id) = ^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
-        resolve(@{
-                  @"cancelled": @NO,
-                  @"selectedIndex": @(selectedIndex),
-                  @"selectedValue": (NSString *)selectedValue,
-                  });
+        resolve(@{ @"cancelled": @NO, @"selectedIndex": @(selectedIndex), @"selectedValue": (NSString *)selectedValue });
     };
 
     void(^cancelBlock)(ActionSheetStringPicker *) = ^(ActionSheetStringPicker *picker) {
@@ -64,8 +54,6 @@ RCT_EXPORT_METHOD(showPicker:(NSDictionary *)options
                                                                            doneBlock:doneBlock
                                                                          cancelBlock:cancelBlock
                                                                               origin:sourceView];
-
-
     [picker showActionSheetPicker];
 }
 
@@ -78,6 +66,7 @@ RCT_EXPORT_METHOD(showCountDownPicker:(NSDictionary *)options
         RCTLogError(@"Tried to display action sheet but there is no application window. options: %@", options);
         return;
     }
+
     UIView *sourceView = controller.view;
 
     NSString *title = @"";
@@ -86,14 +75,11 @@ RCT_EXPORT_METHOD(showCountDownPicker:(NSDictionary *)options
     }
 
     void(^doneBlock)(ActionSheetDatePicker *, id, id) = ^(ActionSheetDatePicker *picker, id selectedDate, id origin) {
-        resolve(@{
-                  @"cancelled": @NO,
-                  @"selectedDate": selectedDate,
-                  });
+        resolve(@{ @"cancelled": @NO, @"countDownDuration": selectedDate });
     };
 
     void(^cancelBlock)(ActionSheetDatePicker *) = ^(ActionSheetDatePicker *picker) {
-      resolve(@{ @"cancelled": @YES });
+        resolve(@{ @"cancelled": @YES });
     };
 
     ActionSheetDatePicker *datePicker = [[ActionSheetDatePicker alloc] initWithTitle:title

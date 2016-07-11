@@ -6,12 +6,9 @@ const {
   }
 } = ReactNative;
 
-async function showPicker(options) {
-  return await CJActionSheetPicker.showPicker(options);
-}
+const {
+  showCountDownPicker,
+  showStringPicker,
+} = CJActionSheetPicker;
 
-async function showCountDownPicker(options) {
-  return await CJActionSheetPicker.showCountDownPicker(options);
-}
-
-export { showPicker, showCountDownPicker };
+export { showCountDownPicker, showStringPicker };
