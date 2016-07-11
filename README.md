@@ -38,7 +38,7 @@ var ActionSheetPicker = require('NativeModules').CJActionSheetPicker;
 
 var ExampleApp = React.createClass({
   showPicker: function() {
-    ActionSheetPicker.showPicker({
+    ActionSheetPicker.showStringPicker({
       title: 'Fruits', //optional
       selectedIndex: 1 //optional intial time,
       rows: ['apple', 'orange']
