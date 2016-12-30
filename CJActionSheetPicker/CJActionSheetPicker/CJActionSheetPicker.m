@@ -5,6 +5,7 @@
 #import "RCTUtils.h"
 
 #import "ActionSheetStringPicker.h"
+#import "ActionSheetStringMultipleSelectionPicker.h"
 #import "ActionSheetDatePicker.h"
 
 @implementation CJActionSheetPicker
@@ -33,28 +34,56 @@ RCT_EXPORT_METHOD(showStringPicker:(NSDictionary *)options
         title = [RCTConvert NSString:options[@"title"]];
     }
 
-    NSInteger *selectedIndex = nil;
-    if (options[@"selectedIndex"]) {
-        selectedIndex = [RCTConvert NSInteger:options[@"selectedIndex"]];
-    }
+    BOOL multiple = options[@"multiple"] ? YES : NO;
 
     NSArray *rows = [RCTConvert NSArray:options[@"rows"]];
 
-    void(^doneBlock)(ActionSheetStringPicker *, NSInteger, id) = ^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
-        resolve(@{ @"cancelled": @NO, @"selectedIndex": @(selectedIndex), @"selectedValue": (NSString *)selectedValue });
-    };
-
-    void(^cancelBlock)(ActionSheetStringPicker *) = ^(ActionSheetStringPicker *picker) {
+    void(^cancelBlock)(AbstractActionSheetPicker *) = ^(AbstractActionSheetPicker *picker) {
         resolve(@{ @"cancelled": @YES });
     };
 
-    ActionSheetStringPicker *picker = [[ActionSheetStringPicker alloc] initWithTitle:title
-                                                                                rows:rows
-                                                                    initialSelection:selectedIndex
-                                                                           doneBlock:doneBlock
-                                                                         cancelBlock:cancelBlock
-                                                                              origin:sourceView];
-    [picker showActionSheetPicker];
+    if (multiple) {
+        NSArray<NSNumber *> *selectedIndices = nil;
+        if (options[@"selectedIndices"]) {
+            selectedIndices = [RCTConvert NSNumberArray:options[@"selectedIndices"]];
+        }
+
+        void(^doneBlock)(ActionSheetStringMultipleSelectionPicker *, NSArray*, id) = ^(ActionSheetStringMultipleSelectionPicker *picker, NSArray *selectedIndices, id selectedValues) {
+            resolve(@{
+                @"cancelled": @NO,
+                @"selectedIndices": selectedIndices,
+                @"selectedValues": (NSArray *)selectedValues
+            });
+        };
+
+        [ActionSheetStringMultipleSelectionPicker showPickerWithTitle:title
+                                                                 rows:rows
+                                                     initialSelection:selectedIndices
+                                                            doneBlock:doneBlock
+                                                          cancelBlock:cancelBlock
+                                                               origin:sourceView];
+    } else {
+
+        NSInteger *selectedIndex = nil;
+        if (options[@"selectedIndex"]) {
+            selectedIndex = [RCTConvert NSInteger:options[@"selectedIndex"]];
+        }
+
+        void(^doneBlock)(ActionSheetStringPicker *, NSInteger, id) = ^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
+            resolve(@{
+                @"cancelled": @NO,
+                @"selectedIndex": @(selectedIndex),
+                @"selectedValue": (NSString *)selectedValue
+            });
+        };
+
+        [ActionSheetStringPicker showPickerWithTitle:title
+                                                rows:rows
+                                    initialSelection:selectedIndex
+                                           doneBlock:doneBlock
+                                         cancelBlock:cancelBlock
+                                              origin:sourceView];
+    }
 }
 
 RCT_EXPORT_METHOD(showCountDownPicker:(NSDictionary *)options
