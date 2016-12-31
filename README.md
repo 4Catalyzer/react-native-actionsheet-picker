@@ -60,6 +60,25 @@ var ExampleApp = React.createClass({
 });
 ```
 
+## Example `ActionSheetPicker` with multiple selection
+This depends on [this PR](https://github.com/skywinder/ActionSheetPicker-3.0/pull/321), you can use it now by changing your `Podfile` to: 
+
+```ruby
+pod 'ActionSheetPicker-3.0', :git => 'https://github.com/oblador/ActionSheetPicker-3.0.git', :branch => 'feature/multiple-selection'
+```
+
+```javascript
+import { showStringPicker } from 'react-native-actionsheet-picker';
+
+showStringPicker({
+  title: 'Fruits', 
+  multiple: true,
+  selectedIndices: [1, 2],
+  rows: ['apple', 'orange', 'pear', 'potato']
+}).then(({ cancelled, selectedIndices, selectedValues }) => {
+  // console.log(selectedValues);
+});
+```
 
 ## Example `CountDownPicker`
 ```javascript
