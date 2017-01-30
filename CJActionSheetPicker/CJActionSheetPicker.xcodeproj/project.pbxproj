@@ -216,8 +216,6 @@
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/../../react-native/React/**",
-					"$(SRCROOT)/node_modules/react-native/React/**",
 					"$(SRCROOT)/../../../ios/Pods/**",
 				);
 				OTHER_LDFLAGS = "-ObjC";
@@ -231,8 +229,6 @@
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/../../react-native/React/**",
-					"$(SRCROOT)/node_modules/react-native/React/**",
 					"$(SRCROOT)/../../../ios/Pods/**",
 				);
 				OTHER_LDFLAGS = "-ObjC";
