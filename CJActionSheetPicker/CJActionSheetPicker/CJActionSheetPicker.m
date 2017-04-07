@@ -4,6 +4,7 @@
 #import <React/RCTLog.h>
 #import <React/RCTUtils.h>
 
+#import "AbstractActionSheetPicker.h"
 #import "ActionSheetStringPicker.h"
 #import "ActionSheetStringMultipleSelectionPicker.h"
 #import "ActionSheetDatePicker.h"
@@ -21,7 +22,7 @@ RCT_EXPORT_METHOD(showStringPicker:(NSDictionary *)options
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(__unused RCTPromiseRejectBlock)reject)
 {
-    UIViewController *controller = RCTKeyWindow().rootViewController;
+    UIViewController *controller = RCTPresentedViewController();
     if (controller == nil) {
         RCTLogError(@"Tried to display action sheet but there is no application window. options: %@", options);
         return;
@@ -42,6 +43,8 @@ RCT_EXPORT_METHOD(showStringPicker:(NSDictionary *)options
         resolve(@{ @"cancelled": @YES });
     };
 
+    AbstractActionSheetPicker *picker;
+
     if (multiple) {
         NSArray<NSNumber *> *selectedIndices = nil;
         if (options[@"selectedIndices"]) {
@@ -56,14 +59,13 @@ RCT_EXPORT_METHOD(showStringPicker:(NSDictionary *)options
             });
         };
 
-        [ActionSheetStringMultipleSelectionPicker showPickerWithTitle:title
-                                                                 rows:rows
-                                                     initialSelection:selectedIndices
-                                                            doneBlock:doneBlock
-                                                          cancelBlock:cancelBlock
-                                                               origin:sourceView];
+        picker = [[ActionSheetStringMultipleSelectionPicker alloc] initWithTitle:title
+                                                                            rows:rows
+                                                                initialSelection:selectedIndices
+                                                                       doneBlock:doneBlock
+                                                                     cancelBlock:cancelBlock
+                                                                          origin:sourceView];
     } else {
-
         NSInteger *selectedIndex = nil;
         if (options[@"selectedIndex"]) {
             selectedIndex = [RCTConvert NSInteger:options[@"selectedIndex"]];
@@ -77,20 +79,25 @@ RCT_EXPORT_METHOD(showStringPicker:(NSDictionary *)options
             });
         };
 
-        [ActionSheetStringPicker showPickerWithTitle:title
-                                                rows:rows
-                                    initialSelection:selectedIndex
-                                           doneBlock:doneBlock
-                                         cancelBlock:cancelBlock
-                                              origin:sourceView];
+        picker = [[ActionSheetStringPicker alloc] initWithTitle:title
+                                                           rows:rows
+                                               initialSelection:selectedIndex
+                                                      doneBlock:doneBlock
+                                                    cancelBlock:cancelBlock
+                                                         origin:sourceView];
     }
+
+    // disable popover for now to support ipad.
+    picker.popoverDisabled = true;
+
+    [picker showActionSheetPicker];
 }
 
 RCT_EXPORT_METHOD(showCountDownPicker:(NSDictionary *)options
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(__unused RCTPromiseRejectBlock)reject)
 {
-    UIViewController *controller = RCTKeyWindow().rootViewController;
+    UIViewController *controller = RCTPresentedViewController();
     if (controller == nil) {
         RCTLogError(@"Tried to display action sheet but there is no application window. options: %@", options);
         return;
@@ -121,6 +128,10 @@ RCT_EXPORT_METHOD(showCountDownPicker:(NSDictionary *)options
     if (options[@"countDownDuration"]) {
         datePicker.countDownDuration = [RCTConvert double:options[@"countDownDuration"]];
     }
+
+    // disable popover for now to support ipad.
+    datePicker.popoverDisabled = true;
+
     [datePicker showActionSheetPicker];
 }
 
