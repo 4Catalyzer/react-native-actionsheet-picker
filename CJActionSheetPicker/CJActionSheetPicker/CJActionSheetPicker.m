@@ -35,6 +35,11 @@ RCT_EXPORT_METHOD(showStringPicker:(NSDictionary *)options
         title = [RCTConvert NSString:options[@"title"]];
     }
 
+    UIColor *tintColor = nil;
+    if (options[@"tintColor"]) {
+        tintColor = [RCTConvert UIColor:options[@"tintColor"]];
+    }
+
     BOOL multiple = options[@"multiple"] ? YES : NO;
 
     NSArray *rows = [RCTConvert NSArray:options[@"rows"]];
@@ -61,12 +66,13 @@ RCT_EXPORT_METHOD(showStringPicker:(NSDictionary *)options
 
         picker = [[ActionSheetStringMultipleSelectionPicker alloc] initWithTitle:title
                                                                             rows:rows
+                                                                       tintColor:tintColor
                                                                 initialSelection:selectedIndices
                                                                        doneBlock:doneBlock
                                                                      cancelBlock:cancelBlock
                                                                           origin:sourceView];
     } else {
-        NSInteger *selectedIndex = nil;
+        NSInteger selectedIndex = 0;
         if (options[@"selectedIndex"]) {
             selectedIndex = [RCTConvert NSInteger:options[@"selectedIndex"]];
         }
@@ -85,6 +91,10 @@ RCT_EXPORT_METHOD(showStringPicker:(NSDictionary *)options
                                                       doneBlock:doneBlock
                                                     cancelBlock:cancelBlock
                                                          origin:sourceView];
+    }
+
+    if (tintColor) {
+        picker.toolbarButtonsColor = tintColor;
     }
 
     // disable popover for now to support ipad.
@@ -127,6 +137,10 @@ RCT_EXPORT_METHOD(showCountDownPicker:(NSDictionary *)options
 
     if (options[@"countDownDuration"]) {
         datePicker.countDownDuration = [RCTConvert double:options[@"countDownDuration"]];
+    }
+
+    if (options[@"tintColor"]) {
+        datePicker.toolbarButtonsColor = [RCTConvert UIColor:options[@"tintColor"]];
     }
 
     // disable popover for now to support ipad.
