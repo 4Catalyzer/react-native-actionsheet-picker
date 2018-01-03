@@ -128,15 +128,79 @@ RCT_EXPORT_METHOD(showCountDownPicker:(NSDictionary *)options
         resolve(@{ @"cancelled": @YES });
     };
 
+    ActionSheetDatePicker *countdownPicker = [[ActionSheetDatePicker alloc] initWithTitle:title
+                                                                           datePickerMode:UIDatePickerModeCountDownTimer
+                                                                             selectedDate:nil
+                                                                                doneBlock:doneBlock
+                                                                              cancelBlock:cancelBlock
+                                                                                   origin:sourceView];
+
+    if (options[@"countDownDuration"]) {
+        countdownPicker.countDownDuration = [RCTConvert double:options[@"countDownDuration"]];
+    }
+
+    if (options[@"tintColor"]) {
+        countdownPicker.toolbarButtonsColor = [RCTConvert UIColor:options[@"tintColor"]];
+    }
+
+    // disable popover for now to support ipad.
+    countdownPicker.popoverDisabled = true;
+
+    [countdownPicker showActionSheetPicker];
+}
+
+RCT_EXPORT_METHOD(showDatePicker:(NSDictionary *)options
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(__unused RCTPromiseRejectBlock)reject)
+{
+    UIViewController *controller = RCTPresentedViewController();
+    if (controller == nil) {
+        RCTLogError(@"Tried to display action sheet but there is no application window. options: %@", options);
+        return;
+    }
+
+    UIView *sourceView = controller.view;
+
+    NSString *title = @"";
+    if (options[@"title"]) {
+        title = [RCTConvert NSString:options[@"title"]];
+    }
+
+    void(^doneBlock)(ActionSheetDatePicker *, id, id) = ^(ActionSheetDatePicker *picker, id selectedDate, id origin) {
+        // https://stackoverflow.com/a/16254918/940133
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        NSLocale *enUSPOSIXLocale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+        [dateFormatter setLocale:enUSPOSIXLocale];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
+
+        resolve(@{
+            @"cancelled": @NO,
+            @"selectedDate": [dateFormatter stringFromDate:selectedDate]
+        });
+    };
+
+    void(^cancelBlock)(ActionSheetDatePicker *) = ^(ActionSheetDatePicker *picker) {
+        resolve(@{ @"cancelled": @YES });
+    };
+
+    NSDate *selectedDate = [NSDate date];
+    if (options[@"selectedDate"]) {
+        selectedDate = [RCTConvert NSDate:options[@"selectedDate"]];
+    }
+
     ActionSheetDatePicker *datePicker = [[ActionSheetDatePicker alloc] initWithTitle:title
-                                                                      datePickerMode:UIDatePickerModeCountDownTimer
-                                                                        selectedDate:nil
+                                                                      datePickerMode:UIDatePickerModeDate
+                                                                        selectedDate:selectedDate
                                                                            doneBlock:doneBlock
                                                                          cancelBlock:cancelBlock
                                                                               origin:sourceView];
 
-    if (options[@"countDownDuration"]) {
-        datePicker.countDownDuration = [RCTConvert double:options[@"countDownDuration"]];
+    if (options[@"minimumDate"]) {
+        datePicker.minimumDate = [RCTConvert NSDate:options[@"minimumDate"]];
+    }
+
+    if (options[@"maximumDate"]) {
+        datePicker.maximumDate = [RCTConvert NSDate:options[@"maximumDate"]];
     }
 
     if (options[@"tintColor"]) {
